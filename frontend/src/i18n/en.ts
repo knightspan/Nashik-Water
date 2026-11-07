@@ -156,12 +156,13 @@ const en = {
     flow: {
       sensors: 'Sensors',
       sensorsText: 'pH, TDS, turbidity and temperature probes in the water',
-      arduino: 'Arduino UNO',
-      arduinoText: 'Reads and calibrates every minute; local LEDs and buzzer',
-      esp: 'ESP8266',
-      espText: 'Sends readings over Wi-Fi to the Pi and ThingSpeak',
-      pi: 'Raspberry Pi AI',
-      piText: 'Every 5 minutes: sensor check, WQI and Random Forest verdict',
+      station: 'ESP32-C3 station',
+      stationText:
+        'One per site: reads and calibrates every 10 s, sensor check and on-board AI verdict',
+      wifi: 'Wi-Fi + HTTPS',
+      wifiText: 'Sends each reading straight to the cloud; keeps an hour of data if offline',
+      cloud: 'Cloud API',
+      cloudText: 'Stores every reading, raises alerts and pushes live updates',
       web: 'This website',
       webText: 'Map, history and alerts for everyone',
     },
@@ -181,7 +182,7 @@ const en = {
     coloursTitle: 'What each colour means',
     aiTitle: 'How the AI decides',
     aiText:
-      'A Random Forest model compares each 5-minute window with the site’s own normal, its recent changes and the time of day. It separates natural changes (rain, bathing) from the sewage pattern (turbidity and TDS jump while pH falls). Faulty sensors are caught first and shown in grey, so a broken probe never turns a site red.',
+      'Every 5 minutes the station compares the median of its readings with the site’s own normal and with the change over the last 15 minutes. A decision tree, trained with the same pipeline and data as the project’s Random Forest, separates natural changes (rain, bathing) from the sewage pattern (turbidity and TDS jump while pH falls). Faulty sensors are caught first and shown in grey, so a broken probe never turns a site red. A station with only a pH probe uses the BIS limit (6.5–8.5) instead and never reports contamination.',
     limitsTitle: 'Limitations',
     limits: {
       one: 'This system detects changes in water quality from 4 sensors. It does not test bacteria, heavy metals or chemicals and is not a certificate that water is safe to drink.',
@@ -202,7 +203,7 @@ const en = {
       'Loknete Gopinathji Munde Institute of Engineering Education & Research (LOGMIEER), Nashik',
     abstractTitle: 'Abstract',
     abstract:
-      'Low-cost probes measure pH, TDS, turbidity and temperature every minute at the Ramkund ghats. An Arduino UNO calibrates the readings and an ESP8266 sends them to ThingSpeak and a Raspberry Pi 5, where a Random Forest model classifies every site every five minutes as Normal, Natural change or Contamination, and a sensor-health check catches faulty probes. This website shows the status, history and alerts for seven sites along the Godavari, from its origin at Trimbakeshwar to the urban Nandini river, in English and Marathi. Six sites are simulated for demonstration; one is a real sensor node.',
+      'Each monitored water body gets a low-cost sensor station: pH, TDS, turbidity and temperature probes wired to an ESP32-C3. The station calibrates its readings, checks its own sensors and runs a decision tree trained on the project’s data to classify the water as Normal, Natural change or Contamination, then sends every reading over Wi-Fi and HTTPS straight to the cloud. The cloud API stores the readings, raises alerts and pushes live updates to this website, which shows the status, history and alerts for seven sites along the Godavari, from its origin at Trimbakeshwar to the urban Nandini river, in English and Marathi. Adding a site means installing one more station. Ramkund has a real station; the other six sites are simulated for demonstration.',
     stackTitle: 'Built with',
     resultsTitle: 'Model results (simulated test set)',
     quoteA: 'From a probe in the river to a ',
@@ -215,9 +216,9 @@ const en = {
       events: 'Contamination events caught',
     },
     stack: {
-      sensors: 'pH (PH-4502C), TDS, turbidity and DS18B20 temperature probes',
-      nodes: 'Calibration, on-board decision tree, Wi-Fi and ThingSpeak',
-      pi: 'MQTT, Random Forest, sensor-health rules and offline queue',
+      sensors: 'pH, TDS, turbidity and DS18B20 temperature probes',
+      nodes: 'One per site: calibration, on-board decision tree, Wi-Fi and HTTPS to the cloud',
+      pi: 'Edge hub for the full Random Forest, MQTT and an offline queue',
       api: 'REST API, live updates (SSE), alerts and data retention',
       web: 'Map, history, English / Marathi and dark mode',
       hosting: 'Hosted front end, back end and database',

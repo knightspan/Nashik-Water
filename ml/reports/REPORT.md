@@ -86,8 +86,9 @@ Windows: train 125,232 · validation 41,898 · test 41,631.
 
 Healthy minutes wrongly flagged: 0.026 %.
 
-## Arduino UNO decision tree (offline local alerts)
+## On-device decision tree (ESP32-C3 station and Arduino UNO node)
 
 Depth 5, 59 nodes, 8.2 KB header, features `rel_ph`, `rel_tds`, `rel_turb`, `d3_tds`, `d3_turb`, `d3_ph`.
 Accuracy 0.899, macro F1 0.831, ALERT recall 0.951, ALERT precision 0.839.
-Copy `ml/models/WaterStateTree.h` and `ml/models/SiteBaseline.h` into `firmware/arduino_node/`.
+Copy `ml/models/WaterStateTree.h` into `firmware/esp32c3_station/` and `firmware/arduino_node/`
+(the station keeps its site baseline in `config.h`; the UNO uses `ml/models/SiteBaseline.h`).

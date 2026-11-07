@@ -37,6 +37,7 @@ from zoneinfo import ZoneInfo
 import httpx
 
 IST = ZoneInfo("Asia/Kolkata")
+SITE_SYNC_S = 300  # re-read which sites are simulated every 5 minutes
 log = logging.getLogger("simulator")
 
 # --------------------------------------------------------------------------- WQI (same formula as the API)
@@ -341,6 +342,21 @@ def backfill(
     return out
 
 
+def sync_sims(sims: dict[str, SiteSim], site_ids: list[str], rng: random.Random) -> tuple[list[str], list[str]]:
+    """Match the running sims to the website's current list of simulated sites.
+
+    When an admin unticks "Simulated" for a site (a real station was installed there),
+    the simulator stops posting for it; a newly added simulated site starts.
+    Returns (added, removed)."""
+    removed = [s for s in sims if s not in site_ids]
+    added = [s for s in site_ids if s not in sims]
+    for s in removed:
+        del sims[s]
+    for s in added:
+        sims[s] = SiteSim(s, random.Random(rng.random()))
+    return added, removed
+
+
 def run(args: argparse.Namespace) -> int:
     client = Client(args.api, args.key)
     client.wait_ready()
@@ -356,8 +372,20 @@ def run(args: argparse.Namespace) -> int:
         client.send(hist)
 
     sim_clock = now
+    next_sync = time.monotonic() + SITE_SYNC_S
     while True:
         heartbeat_path().touch()
+        if not args.sites and time.monotonic() >= next_sync:
+            next_sync = time.monotonic() + SITE_SYNC_S
+            try:
+                added, removed = sync_sims(sims, client.simulated_sites(args.include_ramkund), rng)
+            except httpx.HTTPError as exc:
+                log.warning("could not refresh the site list (%s)", exc)
+            else:
+                for s in removed:
+                    log.info("stopped simulating %s (now a real station)", s)
+                for s in added:
+                    log.info("started simulating %s", s)
         for req in read_requests():
             sim = sims.get(req.get("site", ""))
             if sim is None:

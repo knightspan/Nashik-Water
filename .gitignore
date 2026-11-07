@@ -46,3 +46,6 @@ edge/data/
 
 # Python packaging leftovers
 *.egg-info/
+
+# ESP32 station secrets (copy from config.example.h)
+firmware/esp32c3_station/config.h

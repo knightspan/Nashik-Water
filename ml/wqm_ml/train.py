@@ -552,11 +552,12 @@ Windows: train {m['windows']['train']:,} Â· validation {m['windows']['val']:,} Â
 
 Healthy minutes wrongly flagged: {h['false_flags_on_healthy_minutes_pct']} %.
 
-## Arduino UNO decision tree (offline local alerts)
+## On-device decision tree (ESP32-C3 station and Arduino UNO node)
 
 Depth {a['depth']}, {a['nodes']} nodes, {a.get('header_kb', '?')} KB header, features {', '.join(f'`{f}`' for f in a['features'])}.
 Accuracy {a['accuracy']:.3f}, macro F1 {a['macro_f1']:.3f}, ALERT recall {a['alert_recall']:.3f}, ALERT precision {a['alert_precision']:.3f}.
-Copy `ml/models/WaterStateTree.h` and `ml/models/SiteBaseline.h` into `firmware/arduino_node/`.
+Copy `ml/models/WaterStateTree.h` into `firmware/esp32c3_station/` and `firmware/arduino_node/`
+(the station keeps its site baseline in `config.h`; the UNO uses `ml/models/SiteBaseline.h`).
 """
     (reports_dir / "REPORT.md").write_text(text, encoding="utf-8")
 

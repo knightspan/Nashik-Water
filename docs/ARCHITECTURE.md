@@ -4,15 +4,20 @@
 
 ```mermaid
 flowchart LR
-  S[pH / TDS / turbidity / temp sensors] --> A[Arduino UNO]
-  A -- serial JSON, 1/min --> E[NodeMCU ESP8266]
-  E -- HTTP, 1/20 s --> T[ThingSpeak]
-  E -- MQTT --> P[Raspberry Pi 5<br/>edge_ai.py]
-  P -- "POST /api/ingest/batch (X-API-Key)" --> B[FastAPI back end]
-  SIM[simulator/replay.py<br/>6 virtual nodes] -- "POST /api/ingest/batch" --> B
+  S[pH / TDS / turbidity / temp sensors] --> C[ESP32-C3 station<br/>one per site]
+  C -- "Wi-Fi · HTTPS POST /api/ingest/batch (X-API-Key), 1/10 s" --> B[FastAPI back end]
+  SIM[simulator/replay.py<br/>demo sites, started by start.sh] -- "POST /api/ingest/batch" --> B
+  P[Raspberry Pi 5 edge_ai.py<br/>optional hub] -. "POST /api/ingest/batch" .-> B
   B --> DB[(PostgreSQL)]
   B -- "REST + SSE" --> F[React web app]
 ```
+
+Stations make their own verdict (sensor check, then the decision tree exported by
+`ml/wqm_ml/train.py`, or the BIS pH rule when only a pH probe is fitted) and send a complete
+status record, so the API stays the same for stations, the Pi and the simulator. Ingest is
+idempotent on (site, ts), so a station that resends a batch after a timeout never creates
+duplicates. The simulator re-reads the site list every 5 minutes and stops posting for a
+site as soon as an admin marks it as not simulated (a real station was installed).
 
 ## Back end
 

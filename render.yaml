@@ -12,6 +12,10 @@ services:
     startCommand: sh scripts/start.sh
     healthCheckPath: /api/health
     autoDeploy: true
+    buildFilter: # redeploy when the API or the cloud simulator changes
+      paths:
+        - backend/**
+        - simulator/**
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.11"
@@ -33,3 +37,5 @@ services:
         value: INFO
       - key: RETENTION_TASK_ENABLED
         value: "true"
+      - key: SIMULATOR_ENABLED
+        value: "true" # demo data for the simulated sites runs next to the API (no PC needed)

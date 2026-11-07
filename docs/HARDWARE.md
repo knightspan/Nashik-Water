@@ -1,5 +1,10 @@
 # Hardware: wiring, calibration, firmware and the Raspberry Pi
 
+> **The field design is now the ESP32-C3 station, see [STATION.md](STATION.md).** One
+> ESP32-C3 per site reads the probes and posts straight to the cloud over Wi-Fi. This file
+> describes the alternative edge-hub set-up (Arduino UNO + ESP8266 + Raspberry Pi running the
+> full Random Forest), which is still supported.
+
 This is the path from a box of parts to the **LIVE** Ramkund marker on the website. Do the
 steps in order; each one has a check so a problem is caught where it starts.
 

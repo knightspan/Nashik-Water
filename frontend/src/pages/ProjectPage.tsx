@@ -6,8 +6,8 @@ const TEAM = ['Vishal Shivaji Patil', 'Bhagyashri Sadashiv Patil', 'Kavish Navee
 
 const STACK = [
   { Icon: Waves, title: 'Sensors', key: 'sensors' },
-  { Icon: Cpu, title: 'Arduino UNO + ESP8266', key: 'nodes' },
-  { Icon: Radio, title: 'Raspberry Pi 5', key: 'pi' },
+  { Icon: Cpu, title: 'ESP32-C3 stations', key: 'nodes' },
+  { Icon: Radio, title: 'Raspberry Pi 5 (optional)', key: 'pi' },
   { Icon: Server, title: 'FastAPI + PostgreSQL', key: 'api' },
   { Icon: LineChart, title: 'React + Leaflet + Recharts', key: 'web' },
   { Icon: Database, title: 'Vercel · Render · Neon', key: 'hosting' },

@@ -7,7 +7,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from replay import SiteSim, backfill, wqi
+from replay import SiteSim, backfill, sync_sims, wqi
 
 
 def test_wqi_matches_api_formula() -> None:
@@ -80,3 +80,14 @@ def test_demo_event_is_red_immediately() -> None:
     sim.add_event("contamination", t0, minutes=45, immediate=True)
     assert len(sim.events) == 1
     assert sim.step(t0, 1, spontaneous=False)["colour"] == "RED"
+
+
+def test_sync_stops_sites_that_got_a_real_station() -> None:
+    rng = random.Random(1)
+    sims = {s: SiteSim(s, random.Random(0)) for s in ("tapovan", "nandini", "gangapur_dam")}
+    keep = sims["tapovan"]
+    added, removed = sync_sims(sims, ["tapovan", "nandini", "someshwar"], rng)
+    assert removed == ["gangapur_dam"]
+    assert added == ["someshwar"]
+    assert set(sims) == {"tapovan", "nandini", "someshwar"}
+    assert sims["tapovan"] is keep  # running sims keep their state

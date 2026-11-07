@@ -73,7 +73,14 @@ Changing `INGEST_API_KEY` in Render later has no effect — it is only used when
 
 ## 5. Run the simulator (6 virtual sites)
 
-On any always-on machine — a laptop for the demo, or the Raspberry Pi itself:
+**On Render it starts by itself**: `scripts/start.sh` runs `simulator/replay.py` next to the
+API (`SIMULATOR_ENABLED=true`, the default), so the demo sites keep updating with no PC on.
+When nobody visits for 15 minutes the free server sleeps; on the next visit it wakes and the
+simulator back-fills the gap. A powered ESP32 station posting every 10 s keeps it awake.
+Real stations: see [STATION.md](STATION.md).
+
+To run it on another machine instead (set `SIMULATOR_ENABLED=false` on Render first, so two
+simulators do not post at once):
 
 ```bash
 cd simulator

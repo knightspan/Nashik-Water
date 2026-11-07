@@ -22,8 +22,8 @@ frontend/    React 18 · Vite · TypeScript · Tailwind · Leaflet · Recharts �
 simulator/   replay.py — the 6 virtual nodes (demo data) + viva event trigger
 ml/          wqm_ml — synthetic data, features, sensor-health rules, training, model report
 edge/        edge_ai.py — the Raspberry Pi 5 service (MQTT/serial -> AI -> website, offline queue)
-firmware/    Arduino UNO node, ESP8266 gateway, calibration sketch
-docs/        ARCHITECTURE · API · DEPLOY · HARDWARE · screenshots
+firmware/    esp32c3_station (the field station) · Arduino UNO node, ESP8266 gateway, calibration sketch
+docs/        STATION · ARCHITECTURE · API · DEPLOY · HARDWARE · screenshots
 WQM_code/    the team's original assignment code (kept for reference)
 ```
 
@@ -31,19 +31,20 @@ WQM_code/    the team's original assignment code (kept for reference)
 
 ```mermaid
 flowchart LR
-  subgraph Site["Ramkund ghat (real node)"]
-    S[pH · TDS · turbidity · DS18B20] --> A[Arduino UNO<br/>calibration + decision tree<br/>LEDs / buzzer]
-    A -- serial JSON --> E[NodeMCU ESP8266]
+  subgraph Site["Each monitored site (Ramkund is real)"]
+    S[pH · TDS · turbidity · DS18B20] --> C[ESP32-C3 station<br/>calibration · sensor check<br/>decision tree · LEDs / buzzer]
   end
-  E -- HTTP --> TS[(ThingSpeak)]
-  E -- MQTT wqi/node_01/reading --> P[Raspberry Pi 5<br/>edge_ai.py<br/>health rules + Random Forest]
-  P -- "POST /api/ingest/batch<br/>X-API-Key, offline queue" --> B[FastAPI on Render]
-  SIM[simulator/replay.py<br/>6 virtual nodes] -- "POST /api/ingest/batch" --> B
+  C -- "Wi-Fi · HTTPS POST /api/ingest/batch<br/>X-API-Key, every 10 s, 1 h offline buffer" --> B[FastAPI on Render]
+  SIM[simulator/replay.py<br/>demo sites, runs on Render] -- "POST /api/ingest/batch" --> B
   B <--> DB[(PostgreSQL<br/>Neon / Supabase)]
   B -- "REST + SSE /api/stream" --> F[React app on Vercel]
-  P -. GPIO .-> AL[buzzer · LED · relay]
-  P -. Telegram .-> T[alerts]
+  P[Raspberry Pi 5 hub, optional<br/>edge_ai.py · Random Forest] -. "POST /api/ingest/batch" .-> B
 ```
+
+The field design is one **ESP32-C3 station per water body** posting straight to the cloud;
+adding a site means flashing one more station (see [docs/STATION.md](docs/STATION.md)).
+The Arduino UNO + ESP8266 + Raspberry Pi path in `firmware/arduino_node`, `firmware/esp8266_gateway`
+and `edge/` is kept as an alternative where a site needs the full Random Forest at the edge.
 
 Every 5 minutes per site: 5-minute median window → sensor-health rules (GREY if a probe is
 offline, stuck or out of range) → 24 features → Random Forest → GREEN / AMBER / RED, with

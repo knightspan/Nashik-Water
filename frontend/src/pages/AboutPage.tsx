@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowRight, Cpu, Globe, Radio, ShieldAlert, Waves, Wifi } from 'lucide-react';
+import { ArrowDown, ArrowRight, Cloud, Cpu, Globe, ShieldAlert, Waves, Wifi } from 'lucide-react';
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Legend } from '../components/Legend';
@@ -6,9 +6,9 @@ import { BANDS } from '../lib/format';
 
 const FLOW = [
   { key: 'sensors', Icon: Waves },
-  { key: 'arduino', Icon: Cpu },
-  { key: 'esp', Icon: Wifi },
-  { key: 'pi', Icon: Radio },
+  { key: 'station', Icon: Cpu },
+  { key: 'wifi', Icon: Wifi },
+  { key: 'cloud', Icon: Cloud },
   { key: 'web', Icon: Globe },
 ] as const;
 
