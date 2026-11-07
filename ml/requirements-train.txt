@@ -1,0 +1,4 @@
+-r requirements.txt
+matplotlib==3.10.3
+micromlgen==1.1.28
+pytest==8.3.4

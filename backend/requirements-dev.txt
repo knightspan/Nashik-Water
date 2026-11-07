@@ -1,0 +1,7 @@
+-r requirements.txt
+pytest==8.3.4
+httpx==0.28.1
+ruff==0.8.3
+black==24.10.0
+# npm run bridge (Arduino over USB -> website)
+pyserial==3.5

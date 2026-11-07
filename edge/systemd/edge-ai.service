@@ -1,0 +1,15 @@
+# sudo cp systemd/edge-ai.service /etc/systemd/system/ && sudo systemctl enable --now edge-ai
+[Unit]
+Description=Nashik water quality edge AI
+After=network-online.target mosquitto.service
+Wants=network-online.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/nashik-water/edge
+ExecStart=/home/pi/nashik-water/edge/.venv/bin/python edge_ai.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

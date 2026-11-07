@@ -1,0 +1,7 @@
+# Raspberry Pi 5 (Raspberry Pi OS Bookworm, Python 3.11)
+-r ../ml/requirements.txt
+-e ../ml
+requests==2.32.3
+paho-mqtt==2.1.0
+pyserial==3.5
+# gpiozero + lgpio come with Raspberry Pi OS: sudo apt install python3-gpiozero python3-lgpio

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f2f2f2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)" />
+    <meta
+      name="description"
+      content="Live water-quality status for 7 sites on the Godavari and its tributaries in Nashik."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Clash Display + Satoshi (Latin). Separate requests: Fontshare swaps the second
+         family for "Switzer" when both are combined in one URL. -->
+    <link
+      rel="stylesheet"
+      href="https://api.fontshare.com/v2/css?f%5B%5D=clash-display@500,600,700&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://api.fontshare.com/v2/css?f%5B%5D=satoshi@400,500,700&display=swap"
+    />
+    <!-- Mukta covers Devanagari for Marathi; Instrument Serif for editorial italics -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;700&family=Instrument+Serif:ital@1&display=swap"
+    />
+    <title>Nashik Water Quality Monitor</title>
+    <script>
+      // Apply the saved/system theme before first paint to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          var dark = t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (dark) document.documentElement.classList.add('dark');
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

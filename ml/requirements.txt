@@ -1,0 +1,6 @@
+# Pinned so the model trained here loads on the Raspberry Pi (edge/requirements.txt uses the same pins).
+numpy==2.2.6
+pandas==2.2.3
+scipy==1.15.3
+scikit-learn==1.6.1
+joblib==1.5.1

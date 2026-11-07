@@ -1,0 +1,62 @@
+{
+ "features": [
+  "ph",
+  "tds",
+  "turb",
+  "temp",
+  "wqi",
+  "d_ph",
+  "d_tds",
+  "d_turb",
+  "d_temp",
+  "sd_ph",
+  "sd_tds",
+  "sd_turb",
+  "sd_temp",
+  "dev_ph",
+  "dev_tds",
+  "dev_turb",
+  "h_sin",
+  "h_cos",
+  "rel_ph",
+  "rel_tds",
+  "rel_turb"
+ ],
+ "site_baseline": {
+  "borewell_1": {
+   "ph": 7.22,
+   "tds": 643.66,
+   "turb": 0.86
+  },
+  "college_cooler": {
+   "ph": 7.09,
+   "tds": 95.16,
+   "turb": 0.54
+  },
+  "gangapur_dam": {
+   "ph": 7.61,
+   "tds": 170.52,
+   "turb": 4.9
+  },
+  "godavari_ramkund": {
+   "ph": 7.87,
+   "tds": 328.94,
+   "turb": 13.79
+  },
+  "ro_atm": {
+   "ph": 6.91,
+   "tds": 45.84,
+   "turb": 0.39
+  },
+  "tank_roof": {
+   "ph": 7.5,
+   "tds": 174.42,
+   "turb": 2.19
+  },
+  "tap_municipal": {
+   "ph": 7.43,
+   "tds": 165.32,
+   "turb": 1.21
+  }
+ }
+}

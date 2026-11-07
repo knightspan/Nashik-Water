@@ -1,0 +1,48 @@
+# Local portable Postgres (npm run setup / npm run dev)
+.devdb/
+
+# Secrets
+.env
+hosting.env
+*.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+dist/
+.vite/
+playwright-report/
+test-results/
+*.tsbuildinfo
+
+# ML artefacts (large); the shipped model is committed explicitly if needed
+*.joblib.tmp
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Raspberry Pi runtime data (SQLite outbox, logs, status.json)
+edge/data/
+*.db
+*.db-wal
+*.db-shm
+
+# College submission documents stay local (WQM_code/ holds the same code)
+*.docx
+06_Code_and_Diagrams.zip
+
+# Python packaging leftovers
+*.egg-info/

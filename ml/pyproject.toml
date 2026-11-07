@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wqm-ml"
+version = "1.0.0"
+description = "Water-quality features, sensor health and model training (shared by the Pi service)"
+requires-python = ">=3.11"
+dependencies = ["numpy", "pandas", "scipy", "scikit-learn", "joblib"]
+
+[tool.setuptools.packages.find]
+include = ["wqm_ml*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+extend-exclude = [".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/wqm_ml/train.py" = ["E501"]  # Markdown report template lines
+
+[tool.ruff.lint.isort]
+known-first-party = ["wqm_ml", "replay", "edge_ai"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+pythonpath = ["."]

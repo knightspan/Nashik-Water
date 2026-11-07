@@ -1,0 +1,146 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: water
+          POSTGRES_PASSWORD: water
+          POSTGRES_DB: water_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U water" --health-interval 5s --health-timeout 3s --health-retries 20
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      TEST_DATABASE_URL: postgresql+psycopg://water:water@localhost:5432/water_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: backend/requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check .
+      - run: black --check .
+      - run: pytest
+
+  ml-edge-simulator:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: ml/requirements-train.txt
+      - run: pip install -r ml/requirements-train.txt -e ml ruff==0.8.3 requests==2.32.3 paho-mqtt==2.1.0 httpx==0.28.1 pyserial==3.5
+      - run: ruff check --config ml/pyproject.toml ml/wqm_ml ml/tests edge simulator
+      - run: ruff format --check --config ml/pyproject.toml ml/wqm_ml ml/tests edge simulator
+      - name: ML pipeline tests
+        run: pytest
+        working-directory: ml
+      - name: Quick training run (pipeline still trains end to end)
+        run: python -m wqm_ml.train --quick --models /tmp/models --reports /tmp/reports
+        working-directory: ml
+      - name: Pi service tests (with the committed model)
+        run: pytest -q tests
+        working-directory: edge
+      - name: Simulator tests
+        run: pytest -q
+        working-directory: simulator
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+        env:
+          VITE_API_URL: http://localhost:8000
+
+  e2e:
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: water
+          POSTGRES_PASSWORD: water
+          POSTGRES_DB: water
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U water" --health-interval 5s --health-timeout 3s --health-retries 20
+    env:
+      DATABASE_URL: postgresql+psycopg://water:water@localhost:5432/water
+      INGEST_API_KEY: ci-ingest-key-0123456789abcdef
+      ADMIN_EMAIL: admin@ci.local
+      ADMIN_PASSWORD: ci-admin-password
+      CORS_ORIGINS: http://localhost:4173
+      RATE_LIMIT_PUBLIC: 1000/minute
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Start API
+        working-directory: backend
+        run: |
+          pip install -r requirements.txt
+          alembic upgrade head
+          python -m app.cli bootstrap
+          nohup uvicorn app.main:app --port 8000 > /tmp/api.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf localhost:8000/api/health && break; sleep 1; done
+      - name: Back-fill simulated data
+        working-directory: simulator
+        run: |
+          pip install -r requirements.txt
+          python replay.py --api http://localhost:8000 --key "$INGEST_API_KEY" --backfill-hours 24 --once
+      - name: Playwright
+        working-directory: frontend
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+          npx playwright test
+        env:
+          E2E_API_URL: http://localhost:8000
+      - if: failure()
+        run: cat /tmp/api.log | tail -100
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: frontend/playwright-report

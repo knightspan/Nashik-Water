@@ -1,0 +1,81 @@
+{
+ "version": "1.0.0",
+ "sklearn": "1.6.1",
+ "features": [
+  "ph",
+  "tds",
+  "turb",
+  "temp",
+  "wqi",
+  "d1_ph",
+  "d1_tds",
+  "d1_turb",
+  "d3_ph",
+  "d3_tds",
+  "d3_turb",
+  "d3_temp",
+  "sd_ph",
+  "sd_tds",
+  "sd_turb",
+  "sd_temp",
+  "dev_ph",
+  "dev_tds",
+  "dev_turb",
+  "h_sin",
+  "h_cos",
+  "rel_ph",
+  "rel_tds",
+  "rel_turb"
+ ],
+ "classes": [
+  "Contamination",
+  "Natural change",
+  "Normal"
+ ],
+ "contam_threshold": 0.3,
+ "min_history_windows": 30,
+ "site_baseline": {
+  "ugamsthan": {
+   "ph": 7.314,
+   "tds": 109.478,
+   "turb": 2.784
+  },
+  "kushavart": {
+   "ph": 7.595,
+   "tds": 277.654,
+   "turb": 11.73
+  },
+  "gangapur_dam": {
+   "ph": 7.61,
+   "tds": 162.741,
+   "turb": 5.707
+  },
+  "someshwar": {
+   "ph": 7.7,
+   "tds": 212.588,
+   "turb": 10.465
+  },
+  "ramkund": {
+   "ph": 7.809,
+   "tds": 342.914,
+   "turb": 16.794
+  },
+  "tapovan": {
+   "ph": 7.707,
+   "tds": 413.963,
+   "turb": 21.517
+  },
+  "nandini": {
+   "ph": 7.29,
+   "tds": 650.612,
+   "turb": 36.943
+  }
+ },
+ "test_metrics": {
+  "accuracy": 0.9876,
+  "macro_f1": 0.9711,
+  "contam_precision": 0.9778,
+  "contam_recall": 0.9675
+ },
+ "trained_at": "2026-11-02T13:12:00+0530"
+}

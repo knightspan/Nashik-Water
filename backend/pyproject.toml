@@ -1,0 +1,30 @@
+[project]
+name = "nashik-water-backend"
+version = "0.1.0"
+requires-python = ">=3.11"
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = [".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "BLE", "S", "SIM", "RUF"]
+ignore = ["S101", "RUF001", "RUF003"]  # asserts in tests; Devanagari text is intentional
+
+[tool.ruff.lint.per-file-ignores]
+"alembic/versions/*.py" = ["S608"]
+"tests/*" = ["S105", "S106"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+known-third-party = ["alembic"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]

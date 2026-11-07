@@ -1,0 +1,35 @@
+# Render Blueprint for the back end (Dashboard -> New -> Blueprint -> this repo).
+# Native Python runtime (no Docker). The start command runs `alembic upgrade head` and the
+# admin/key bootstrap on every deploy, then starts Uvicorn on $PORT. See docs/DEPLOY.md.
+services:
+  - type: web
+    name: nashik-water-api
+    runtime: python
+    rootDir: backend
+    plan: free
+    region: singapore
+    buildCommand: pip install -r requirements.txt
+    startCommand: sh scripts/start.sh
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.11"
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        sync: false # Neon / Supabase DIRECT connection string, with ?sslmode=require
+      - key: CORS_ORIGINS
+        sync: false # e.g. https://nashik-water.vercel.app
+      - key: JWT_SECRET
+        generateValue: true
+      - key: INGEST_API_KEY
+        generateValue: true # copy it from the dashboard into the Pi's edge/.env (WEB_API_KEY)
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false # at least 12 characters
+      - key: LOG_LEVEL
+        value: INFO
+      - key: RETENTION_TASK_ENABLED
+        value: "true"

@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Design tokens — Swiss / editorial monochrome with one water-blue accent.
+ * Values are "R G B" so Tailwind can apply alpha (e.g. border-line/10).
+ * --muted is darkened from the reference #838282 to #6b6a6a so small text passes WCAG AA
+ * (5.0:1 on #f2f2f2); #838282 is kept as --subtle for large/decorative text only.
+ */
+@layer base {
+  :root {
+    --bg: 242 242 242;
+    --fg: 17 17 17;
+    --surface: 255 255 255;
+    --line: 30 30 30;
+    --muted: 107 106 106;
+    --subtle: 131 130 130;
+    --accent: 11 92 173;
+    --echo-1: 191 191 191;
+    --echo-2: 201 201 201;
+    --echo-3: 209 209 209;
+    --echo-4: 217 217 217;
+    color-scheme: light;
+  }
+
+  .dark {
+    --bg: 17 17 17;
+    --fg: 242 242 242;
+    --surface: 30 30 30;
+    --line: 242 242 242;
+    --muted: 166 165 165;
+    --subtle: 131 130 130;
+    --accent: 120 184 255;
+    --echo-1: 70 70 70;
+    --echo-2: 58 58 58;
+    --echo-3: 48 48 48;
+    --echo-4: 38 38 38;
+    color-scheme: dark;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-paper font-sans font-medium text-ink antialiased;
+  }
+
+  /* Display type: tight tracking only at hero sizes (h1); smaller headings keep their
+     word spaces. Devanagari is never tightened — its letters join along the headline. */
+  h1,
+  h2,
+  h3 {
+    @apply font-display font-bold;
+    word-spacing: 0.06em;
+  }
+  h1 {
+    letter-spacing: -0.04em;
+  }
+  h2,
+  h3 {
+    letter-spacing: -0.015em;
+  }
+  .font-display {
+    word-spacing: 0.06em;
+  }
+  :lang(mr) h1,
+  :lang(mr) h2,
+  :lang(mr) h3,
+  :lang(mr) .font-display {
+    letter-spacing: 0 !important;
+    word-spacing: normal;
+  }
+
+  :focus-visible {
+    @apply outline outline-2 outline-offset-2 outline-water;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Pill button with 1px border that inverts on hover. */
+  .btn-pill {
+    @apply inline-flex items-center gap-2 rounded-full border border-ink px-5 py-2 text-sm font-bold uppercase tracking-wide transition-colors duration-150 hover:bg-ink hover:text-paper;
+  }
+
+  .eyebrow {
+    @apply text-xs font-bold uppercase tracking-[0.18em] text-muted;
+  }
+
+  .card {
+    @apply border border-line/10 bg-transparent transition-colors duration-300 hover:bg-surface;
+  }
+}
+
+/* Leaflet: themed popups, dark-mode tiles, keyboard focus on markers. */
+.leaflet-container {
+  font-family: inherit;
+  background: rgb(var(--bg));
+}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: rgb(var(--surface));
+  color: rgb(var(--fg));
+  border-radius: 4px;
+  box-shadow: 0 2px 12px rgb(0 0 0 / 0.25);
+}
+.leaflet-popup-content {
+  margin: 14px 16px;
+}
+.leaflet-container a.leaflet-popup-close-button {
+  color: rgb(var(--muted));
+}
+.dark .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9);
+}
+.dark .leaflet-control-attribution,
+.dark .leaflet-bar a {
+  background: rgb(var(--surface));
+  color: rgb(var(--fg));
+}
+.site-marker--red {
+  animation: marker-pulse 1.6s ease-in-out infinite;
+}
+@keyframes marker-pulse {
+  50% {
+    stroke-width: 6px;
+  }
+}
+
+/* Recharts: no focus ring box on click */
+.recharts-wrapper:focus,
+.recharts-surface:focus {
+  outline: none;
+}
