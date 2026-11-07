@@ -65,6 +65,8 @@ class Settings(BaseSettings):
     def _production_guards(self) -> Settings:
         if self.environment != "production":
             return self
+        if "@localhost" in self.database_url or "@127.0.0.1" in self.database_url:
+            raise ValueError("DATABASE_URL is not set: add it in the host's Environment settings")
         secret = self.jwt_secret.get_secret_value()
         if secret == DEV_JWT_SECRET or len(secret) < 32:
             raise ValueError("JWT_SECRET must be set to a random value of at least 32 characters")
