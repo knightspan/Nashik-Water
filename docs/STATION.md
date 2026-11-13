@@ -71,6 +71,10 @@ in separate cups or a few centimetres apart.
 
 ## 3. Flash the firmware (Arduino IDE 2)
 
+Check the sensors first with `firmware/esp32c3_sensor_test/esp32c3_sensor_test.ino`: same
+pins and formulas, no Wi-Fi. It prints each sensor's pin and board voltage once a second and
+warns when a wire is loose or a pin voltage is too high (missing divider).
+
 1. **File → Preferences → Additional boards manager URLs:**
    `https://espressif.github.io/arduino-esp32/package_esp32_index.json`
 2. **Boards Manager:** install **esp32 by Espressif Systems** (3.x).
